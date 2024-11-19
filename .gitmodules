@@ -1,0 +1,3 @@
+[submodule "eia-carob"]
+	path = eia-carob
+	url = https://github.com/EiA2030/eia-carob
