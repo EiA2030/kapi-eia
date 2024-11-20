@@ -6,8 +6,8 @@
 #* @serializer json
 #* @get /use-case
 function(res, req, eia_code, key) {
-  keys <- read.csv("keys.csv")
-  md <- read.csv("./data/clean/carob_eia_meta.csv")
+  keys <- read.csv("secrets/keys.csv")
+  md <- read.csv("../eia-carob/data/compiled/carob_eia_metadata.csv")
   if (!(key %in% (keys$key))){
     res$status <- 401
     list("401 Unauthorized")
@@ -16,7 +16,7 @@ function(res, req, eia_code, key) {
     list("404 Not Found")
   } else {
     uri <- md[md$usecase_code == eia_code, "uri"]
-    uu <- do.call(carobiner::bindr,lapply(paste0("./data/clean/eia/", uri, ".csv"), read.csv))
+    uu <- do.call(carobiner::bindr,lapply(paste0("../eia-carob/data/clean/eia/", uri, ".csv"), read.csv))
   }
 }
 
@@ -27,8 +27,8 @@ function(res, req, eia_code, key) {
 #* @serializer json
 #* @get /kpi
 function(res, req, eia_code, kpi, key) {
-  keys <- read.csv("keys.csv")
-  md <- read.csv("./data/clean/carob_eia_meta.csv")
+  keys <- read.csv("secrets/keys.csv")
+  md <- read.csv("../eia-carob/data/compiled/carob_eia_metadata.csv")
   activity <- md[md$usecase_code == eia_code, "activity"]
   
   if (!(key %in% (keys$key))){
@@ -39,7 +39,7 @@ function(res, req, eia_code, kpi, key) {
     list("404 Not Found. No validation data")
   } else {
     uri <- md[md$usecase_code == eia_code & md$activity == "validation", "uri", drop = FALSE]
-    uu <- read.csv(paste0("./data/clean/eia/", uri, ".csv"))
+    uu <- read.csv(paste0("../eia-carob/data/clean/eia/", uri, ".csv"))
     if(kpi == "yield"){
       desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield","fwy_residue")

@@ -32,18 +32,4 @@ carobiner:::update_terms(local_terms=file.path(path,"terms"))
 # Compile
 carobiner::make_carob(path)
 
-# Copy folder to apiworkspace
-src_folder <- file.path(path,"data/clean/eia")
-dest_folder <- file.path(path,"other/api/data/clean")
-
-if (!dir.exists(dest_folder)) {
-  dir.create(dest_folder, recursive = TRUE)
-}
-# Copy the folder using the system command
-system2("cp", args = c("-r", shQuote(src_folder), shQuote(dest_folder)))
-
-
-# Bind metadata files to access uri and usecase_code
-md <- do.call(carobiner::bindr,lapply(paste0(file.path(path,"data/clean/eia/"),list.files(file.path(path,"data/clean/eia"), pattern = "_meta")),read.csv))
-write.csv(md, file = file.path(path,"other/api/data/clean/carob_eia_meta.csv"), row.names = FALSE)
 
