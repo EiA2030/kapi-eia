@@ -11,6 +11,8 @@ WORKDIR /home/kapivara/kapi
 
 COPY carob-eia /home/kapivara/carob-eia
 
+COPY secrets app/secrets
+
 RUN Rscript app/compile.R
 
 EXPOSE 8567
