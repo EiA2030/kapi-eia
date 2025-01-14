@@ -19,7 +19,7 @@ install_and_load <- function(packages, repos = "http://cran.us.r-project.org") {
 }
 
 # Define the required packages
-required_packages <- c("remotes", "dplyr", "magrittr","plumber")
+required_packages <- c("remotes", "dplyr", "magrittr","plumber", "logger")
 
 # Install and load the required packages
 install_and_load(required_packages)
@@ -31,5 +31,3 @@ carobiner:::update_terms(local_terms=file.path(path,"terms"))
 
 # Compile
 carobiner::make_carob(path)
-
-
