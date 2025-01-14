@@ -15,9 +15,11 @@ COPY secrets app/secrets
 
 RUN Rscript app/compile.R
 
+WORKDIR /home/kapivara/kapi/app
+
 EXPOSE 8567
 
 HEALTHCHECK CMD curl --fail http://localhost:8567/_stcore/health || exit 1
 
-ENTRYPOINT ["Rscript", "app/app.R"]
+ENTRYPOINT ["Rscript", "app.R"]
 

@@ -1,1 +1,3 @@
-secrets/
+app/secrets/
+app/logs/
+.Rproj.user
