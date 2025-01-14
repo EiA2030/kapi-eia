@@ -56,7 +56,7 @@ pr$registerHooks(
     postroute = function(req, res) {
       end <- tictoc::toc(quiet = TRUE)
       # Log details about the request and the response
-      log_info('{convert_empty(req$REMOTE_ADDR)} "{convert_empty(req$HTTP_USER_AGENT)}" {convert_empty(req$HTTP_HOST)} {convert_empty(req$REQUEST_METHOD)} {convert_empty(req$PATH_INFO)} {convert_empty(res$body$user)} {convert_empty(req$HTTP_X_API_KEY)} {convert_empty(res$status)} {round(end$toc - end$tic, digits = getOption("digits", 5))}')
+      log_info('{convert_empty(req$REMOTE_ADDR)} "{convert_empty(req$HTTP_USER_AGENT)}" {convert_empty(req$HTTP_HOST)} {convert_empty(req$REQUEST_METHOD)} {convert_empty(req$PATH_INFO)} {convert_empty(res$body[2])} {convert_empty(res$status)} {round(end$toc - end$tic, digits = getOption("digits", 5))}')
     }
   )
 )
