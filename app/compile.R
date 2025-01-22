@@ -25,7 +25,7 @@ required_packages <- c("remotes", "dplyr", "magrittr","plumber", "logger", "tict
 install_and_load(required_packages)
 
 # install carobiner
-remotes::install_github("reagro/carobiner", force = TRUE, ask = FALSE, upgrade ="always")
+remotes::install_github("egbendito/carobiner", force = TRUE, ask = FALSE, upgrade ="always")
 
 carobiner:::update_terms(local_terms=file.path(path,"terms"))
 
