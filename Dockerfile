@@ -5,7 +5,10 @@ RUN apt-get update && \
 
 RUN mkdir -p /home/kapivara
 
-RUN git clone --recurse-submodules https://github.com/egbendito/kapi-eia /home/kapivara/kapi
+COPY kapi-eia /home/kapivara/kapi
+
+RUN rm -rf /home/kapivara/kapi/eia-carob && \
+    git clone https://github.com/EiA2030/eia-carob /home/kapivara/kapi/eia-carob
 
 WORKDIR /home/kapivara/kapi
 
