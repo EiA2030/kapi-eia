@@ -7,8 +7,7 @@ RUN mkdir -p /home/kapivara
 
 COPY kapi-eia /home/kapivara/kapi
 
-RUN rm -rf /home/kapivara/kapi/eia-carob && \
-    git clone https://github.com/EiA2030/eia-carob /home/kapivara/kapi/eia-carob
+RUN git clone https://github.com/EiA2030/eia-carob /home/kapivara/kapi/eia-carob
 
 WORKDIR /home/kapivara/kapi
 
@@ -21,8 +20,6 @@ RUN Rscript app/compile.R
 WORKDIR /home/kapivara/kapi/app
 
 EXPOSE 8567
-
-HEALTHCHECK CMD curl --fail http://localhost:8567/_stcore/health || exit 1
 
 ENTRYPOINT ["Rscript", "app.R"]
 
