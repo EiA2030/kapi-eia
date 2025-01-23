@@ -5,7 +5,9 @@ RUN apt-get update && \
 
 RUN mkdir -p /home/kapivara
 
-RUN git clone --recurse-submodules https://github.com/egbendito/kapi-eia /home/kapivara/kapi
+COPY kapi-eia /home/kapivara/kapi
+
+RUN git clone https://github.com/EiA2030/eia-carob /home/kapivara/kapi/eia-carob
 
 WORKDIR /home/kapivara/kapi
 
@@ -18,8 +20,6 @@ RUN Rscript app/compile.R
 WORKDIR /home/kapivara/kapi/app
 
 EXPOSE 8567
-
-HEALTHCHECK CMD curl --fail http://localhost:8567/_stcore/health || exit 1
 
 ENTRYPOINT ["Rscript", "app.R"]
 
