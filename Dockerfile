@@ -5,15 +5,12 @@ RUN apt-get update && \
 
 RUN mkdir -p /home/kapivara
 
-COPY kapi-eia /home/kapivara/kapi
-
-RUN git clone https://github.com/EiA2030/eia-carob /home/kapivara/kapi/eia-carob
+RUN git clone --single-branch --branch dev https://github.com/EiA2030/kapi-eia /home/kapivara/kapi && \
+    git clone https://github.com/EiA2030/eia-carob /home/kapivara/kapi/eia-carob
 
 WORKDIR /home/kapivara/kapi
 
 COPY carob-eia /home/kapivara/carob-eia
-
-COPY secrets app/secrets
 
 RUN Rscript app/compile.R
 
@@ -22,4 +19,3 @@ WORKDIR /home/kapivara/kapi/app
 EXPOSE 8567
 
 ENTRYPOINT ["Rscript", "app.R"]
-
