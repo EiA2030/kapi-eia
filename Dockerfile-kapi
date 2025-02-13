@@ -1,0 +1,16 @@
+FROM rocker/geospatial:4.4.1
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y git wget curl
+
+COPY app /var/www/kapi/app
+
+WORKDIR /var/www/kapi
+
+RUN Rscript app/reqs.R
+
+WORKDIR /var/www/kapi/app
+
+EXPOSE 8567
+
+ENTRYPOINT ["Rscript", "app.R"]

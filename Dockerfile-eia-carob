@@ -1,0 +1,10 @@
+FROM rocker/geospatial:4.4.1
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y git wget curl
+
+RUN git clone https://github.com/EiA2030/eia-carob /usr/local/data/eia-carob
+
+COPY src /usr/local/data/eia-carob
+
+WORKDIR /usr/local/data/eia-carob
