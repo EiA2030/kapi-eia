@@ -7,7 +7,6 @@ library(logger)
 log_dir <- "logs"
 if (!fs::dir_exists(log_dir)) fs::dir_create(log_dir)
 log_appender(appender_tee(tempfile("plumber_", log_dir, ".log")))
-# log_appender(appender_tee(tempfile(log_dir, "plumber_", log_dir, ".log")))
 
 convert_empty <- function(string) {
   if (is.null(string) || is.na(string) || string == "") {
