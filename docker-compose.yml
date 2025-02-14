@@ -6,23 +6,24 @@ services:
     image: iita/eia-carob:0.1.0
     build:
       context: .
-      dockerfile: ./Dockerfile-eia-carob
+      dockerfile: Dockerfile-eia-carob
     volumes:
-      - ~/carob-eia:/usr/local/data/carob-eia # input raw data
-      - ~/eia-carob/data:/usr/local/data/eia-carob/data # output carob-processed data (used by kapi)
+      - ${RAW_DATA}:/usr/local/data/carob-eia # input raw data
+      - ${COMPILED_DATA}:/usr/local/data/eia-carob/data # output carob-processed data (used by kapi)
+    command: ["Rscript", "compile.R"]
   kapi:
     container_name: kapi
     image: iita/kapi:0.0.1
     build: 
       context: .
-      dockerfile: ./Dockerfile-kapi
+      dockerfile: Dockerfile-kapi
     restart: always
     ports:
       - "80:8567"
     volumes:
-      - ~/kapi-eia/logs:/var/www/kapi/app/logs
-      - ~/kapi-eia/secrets:/var/www/kapi/app/secrets
-      - ~/eia-carob/data:/var/www/kapi/eia-carob/data # mounts the compiled eia-carob directory to the target in kapi
+      - ./logs:/var/www/kapi/app/logs
+      - ./secrets:/var/www/kapi/app/secrets
+      - ${COMPILED_DATA}:/var/www/kapi/eia-carob/data # mounts the compiled eia-carob directory to the target in kapi
 
 networks:
   default:
