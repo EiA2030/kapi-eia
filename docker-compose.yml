@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile-kapi
     restart: always
     ports:
-      - "80:8567"
+      - "8080:8567"
     volumes:
       - ./logs:/var/www/kapi/app/logs
       - ./secrets:/var/www/kapi/app/secrets
