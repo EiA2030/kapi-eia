@@ -3,7 +3,7 @@ name: kapi
 services:
   eia-carob:
     container_name: eia-carob-data
-    image: iita/eia-carob:0.1.0
+    image: iita/eia-carob:0.2.1
     build:
       context: .
       dockerfile: Dockerfile-eia-carob
@@ -13,7 +13,7 @@ services:
     command: ["Rscript", "compile.R"]
   kapi:
     container_name: kapi
-    image: iita/kapi:0.0.1
+    image: iita/kapi:0.1.1
     build: 
       context: .
       dockerfile: Dockerfile-kapi
