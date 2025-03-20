@@ -1,3 +1,7 @@
+#* @apiTitle Excellence in Agronomy KPI API
+#* @apiDescription Endpoint for the agronomic gain key performance indicators (KPIs)used to to monitor, evaluate and measure the impact of changes in agronomic practices in the CGIAR Excellence in Agronomy initiative.
+#* @apiVersion 0.1.1
+
 #* @tag KPI-validation-Use-Case-Data
 #* Get computed validation KPIs for use cases
 #* Retrieve computed KPIs for all validation records in a use case. It uses metrics from [Saito et al., 2023](https://hdl.handle.net/10568/134668)<br>
@@ -83,23 +87,31 @@ function(res, req, eia_code, kpi) {
                         "N_fertilizer","P_fertilizer","K_fertilizer", "N_organic","P_organic","K_organic")
       #ensures you only select columns that actually exist in uu
       existing_cols <- intersect(desired_cols, names(uu))
-      k <- uu[, existing_cols, drop = FALSE]
-      # Replace missing columns values with zero
-      names_to_check <- c("N_fertilizer", "P_fertilizer", "K_fertilizer", "N_organic", "P_organic", "K_organic")
-      # Initialize missing columns with 0
-      k[names_to_check] <- lapply(names_to_check, function(name) {
-        if (name %in% names(k)) {
-          return(k[[name]])
+      if (any(c("yield", "fw_yield", "dm_yield") %in% existing_cols)){
+        if ("yield" %in% existing_cols){
+          cols <- existing_cols[!(existing_cols %in% c("fw_yield", "dm_yield"))]
+        } else if ("fw_yield" %in% existing_cols){
+          cols <- existing_cols[!(existing_cols %in% c("dm_yield"))]
+        } else {
+          cols <- existing_cols
+        }
+        out <- uu[, cols, drop = FALSE]
+        colnames(out)[grepl("_yield", colnames(out))] <- "yield"
+        # Initialize missing columns with 0
+        out[c("N_fertilizer", "P_fertilizer", "K_fertilizer", "N_organic", "P_organic", "K_organic")] <- lapply(c("N_fertilizer", "P_fertilizer", "K_fertilizer", "N_organic", "P_organic", "K_organic"), function(name) {
+          if (name %in% names(out)) {
+            return(out[[name]])
           } else {
-            return(rep(0, nrow(k)))
+            return(rep(0, nrow(out)))
           }
         })
-      #Calc KPI nutrient use efficiency values... while handling zero division
-      k$NUE <- ifelse((k$N_fertilizer + k$N_organic) == 0, NA, k$yield / (k$N_fertilizer + k$N_organic))
-      k$PUE <- ifelse((k$P_fertilizer + k$P_organic) == 0, NA, k$yield / (k$P_fertilizer + k$P_organic))
-      k$KUE <- ifelse((k$K_fertilizer + k$K_organic) == 0, NA, k$yield / (k$K_fertilizer + k$K_organic))
-      out <- k[,-which(names(k) %in% c(names_to_check, "yield"))]
-      out
+        #Calc KPI nutrient use efficiency values... while handling zero division
+        out$NUE <- ifelse((out$N_fertilizer + out$N_organic) == 0, NA, out$yield / (out$N_fertilizer + out$N_organic))
+        out$PUE <- ifelse((out$P_fertilizer + out$P_organic) == 0, NA, out$yield / (out$P_fertilizer + out$P_organic))
+        out$KUE <- ifelse((out$K_fertilizer + out$K_organic) == 0, NA, out$yield / (out$K_fertilizer + out$K_organic))
+        out <- out[,-which(names(out) %in% c("N_fertilizer", "P_fertilizer", "K_fertilizer", "N_organic", "P_organic", "K_organic", "yield"))]
+        out
+      }
     } else if(kpi == "profit"){
       desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield", "crop_price", "fertilizer_amount", "fertilizer_price", "currency")
