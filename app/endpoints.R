@@ -104,16 +104,26 @@ function(res, req, eia_code, kpi) {
       desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield", "crop_price", "fertilizer_amount", "fertilizer_price", "currency")
       existing_cols <- intersect(desired_cols, names(uu))
-      k <- uu[, existing_cols, drop = FALSE]
-      k$crop.revenue <- k$yield * k$crop_price
-      k$fertilizer.costs <- k$fertilizer_amount * k$fertilizer_price
-      #Error handling: Initialize 'profit' to NA
-      k$profit <- NA
-      # If both 'crop_price' and 'fertilizer_price' exist, calculate 'profit'
-      if (all(c("crop_price", "fertilizer_price") %in% names(k))) {
-        k$profit <- k$crop.revenue - k$fertilizer.costs
+      if (any(c("yield", "fw_yield", "dm_yield") %in% existing_cols)){
+        if ("yield" %in% existing_cols){
+          cols <- existing_cols[!(existing_cols %in% c("fw_yield", "dm_yield"))]
+        } else if ("fw_yield" %in% existing_cols){
+          cols <- existing_cols[!(existing_cols %in% c("dm_yield"))]
+        } else {
+          cols <- existing_cols
+        }
+        out <- uu[, cols, drop = FALSE]
+        colnames(out)[grepl("_yield", colnames(out))] <- "yield"
+        out$crop.revenue <- out$yield * out$crop_price
+        out$fertilizer.costs <- out$fertilizer_amount * out$fertilizer_price
+        #Error handling: Initialize 'profit' to NA
+        out$profit <- NA
+        # If both 'crop_price' and 'fertilizer_price' exist, calculate 'profit'
+        if (all(c("crop_price", "fertilizer_price") %in% names(out))) {
+          out$profit <- out$crop.revenue - out$fertilizer.costs
+        }
+        out[,-which(names(out) %in% c("yield", "crop_price", "crop.revenue", "fertilizer_amount", "fertilizer_price", "fertilizer.costs"))]
       }
-      k[,-which(names(k) %in% c("yield", "crop_price", "crop.revenue", "fertilizer_amount", "fertilizer_price", "fertilizer.costs"))]
     } else if(kpi == "wue"){
       desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield","irrigation_amount","rain")
