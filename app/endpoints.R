@@ -38,7 +38,7 @@ function(res, req, eia_code, kpi) {
     uri <- md[md$usecase_code == eia_code & md$activity == "validation", "uri", drop = FALSE]
     uu <- read.csv(paste0("../eia-carob/data/clean/eia/", uri, ".csv"))
     if(kpi == "yield.primary"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield")
       existing_cols <- intersect(desired_cols, names(uu))
       if (any(c("yield", "fw_yield", "dm_yield") %in% existing_cols)){
@@ -61,7 +61,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No primary yield KPI data.")
       }
     } else if (kpi == "yield.secondary"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "fwy_residue", "dmy_residue")
       existing_cols <- intersect(desired_cols, names(uu))
       if (c("fwy_residue", "dmy_residue") %in% existing_cols){
@@ -82,7 +82,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No secondary yield KPI data.")
       }
     } else if (kpi == "nue"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment","yield", "fw_yield", "dm_yield",
                         "N_fertilizer","P_fertilizer","K_fertilizer", "N_organic","P_organic","K_organic")
       #ensures you only select columns that actually exist in uu
@@ -113,7 +113,7 @@ function(res, req, eia_code, kpi) {
         out
       }
     } else if(kpi == "profit"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield", "crop_price", "fertilizer_amount", "fertilizer_price", "currency")
       existing_cols <- intersect(desired_cols, names(uu))
       if (any(c("yield", "fw_yield", "dm_yield") %in% existing_cols)){
@@ -137,7 +137,7 @@ function(res, req, eia_code, kpi) {
         out[,-which(names(out) %in% c("yield", "crop_price", "crop.revenue", "fertilizer_amount", "fertilizer_price", "fertilizer.costs"))]
       }
     } else if(kpi == "wue"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield","irrigation_amount","rain")
       existing_cols <- intersect(desired_cols, names(uu))
       k <- uu[, existing_cols, drop = FALSE]
@@ -199,7 +199,7 @@ function(res, req, eia_code, kpi) {
     uri <- md[md$usecase_code == eia_code & md$activity == "MELIA", "uri", drop = FALSE]
     uu <- read.csv(paste0("../eia-carob/data/clean/eia/", uri, ".csv"))
     if(kpi == "yield.primary"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield")
       existing_cols <- intersect(desired_cols, names(uu))
       if (any(c("yield", "fw_yield", "dm_yield") %in% existing_cols)){
@@ -222,7 +222,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No primary yield MELIA KPI data.")
       }
     } else if (kpi == "yield.secondary"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "fwy_residue", "dmy_residue")
       existing_cols <- intersect(desired_cols, names(uu))
       if (c("fwy_residue", "dmy_residue") %in% existing_cols){
@@ -243,7 +243,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No secondary yield MELIA KPI data.")
       }
     } else if (kpi == "nue"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment","yield", "fw_yield", "dm_yield",
                         "N_fertilizer","P_fertilizer","K_fertilizer", "N_organic","P_organic","K_organic")
       #ensures you only select columns that actually exist in uu
@@ -266,7 +266,7 @@ function(res, req, eia_code, kpi) {
       out <- k[,-which(names(k) %in% c(names_to_check, "yield"))]
       out
     } else if(kpi == "profit"){
-      desired_cols <- c("country", "adm1", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield", "crop_price", "fertilizer_amount", "fertilizer_price", "currency")
       existing_cols <- intersect(desired_cols, names(uu))
       k <- uu[, existing_cols, drop = FALSE]
@@ -305,4 +305,3 @@ function(res, req, eia_code, kpi) {
     }
   }
 }
-
