@@ -67,7 +67,7 @@ function(res, req, eia_code, kpi) {
       desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment", "fwy_residue", "dmy_residue")
       existing_cols <- intersect(desired_cols, names(uu))
-      if (c("fwy_residue", "dmy_residue") %in% existing_cols){
+      if (any(c("fwy_residue", "dmy_residue") %in% existing_cols)){
         if ("fwy_residue" %in% existing_cols){
           cols <- existing_cols[!(existing_cols %in% c("dmy_residue"))]
         } else {
@@ -272,7 +272,7 @@ function(res, req, eia_code, kpi) {
       desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
                         "trial_id", "treatment", "fwy_residue", "dmy_residue")
       existing_cols <- intersect(desired_cols, names(uu))
-      if (c("fwy_residue", "dmy_residue") %in% existing_cols){
+      if (any(c("fwy_residue", "dmy_residue") %in% existing_cols)){
         if ("fwy_residue" %in% existing_cols){
           cols <- existing_cols[!(existing_cols %in% c("dmy_residue"))]
         } else {
