@@ -1,6 +1,6 @@
 #* @apiTitle Excellence in Agronomy KPI API
-#* @apiDescription Endpoint for the agronomic gain key performance indicators (KPIs)used to to monitor, evaluate and measure the impact of changes in agronomic practices in the CGIAR Excellence in Agronomy initiative.
-#* @apiVersion 0.1.1
+#* @apiDescription API for the agronomic gain key performance indicators (KPIs) used to monitor, evaluate and measure the impact of changes in agronomic practices.
+#* @apiVersion 0.1.3
 
 #* @tag KPI-validation-Use-Case-Data
 #* Get computed validation KPIs for use cases
