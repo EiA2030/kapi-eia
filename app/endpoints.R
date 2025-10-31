@@ -38,7 +38,7 @@ function(res, req, eia_code, kpi) {
     uri <- md[md$usecase_code == eia_code & md$activity == "validation", "uri", drop = FALSE]
     uu <- read.csv(paste0("../eia-carob/data/clean/eia/", uri, ".csv"))
     if(kpi == "yield.primary"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield")
       existing_cols <- intersect(desired_cols, names(uu))
       if (any(c("yield", "fw_yield", "dm_yield") %in% existing_cols)){
@@ -51,6 +51,9 @@ function(res, req, eia_code, kpi) {
         }
         out <- uu[, cols, drop = FALSE]
         colnames(out)[length(colnames(out))] <- "yield.primary"
+        # Add year
+        names(out)[names(out) == 'planting_date'] <- 'year'
+        out$year <- substr(out$year, 1, 4)
         # Filter missing records
         # out <- out[!is.na(out$yield.primary), ]
         out
@@ -61,7 +64,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No primary yield KPI data.")
       }
     } else if (kpi == "yield.secondary"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment", "fwy_residue", "dmy_residue")
       existing_cols <- intersect(desired_cols, names(uu))
       if (c("fwy_residue", "dmy_residue") %in% existing_cols){
@@ -72,6 +75,9 @@ function(res, req, eia_code, kpi) {
         }
         out <- uu[, cols, drop = FALSE]
         colnames(out)[length(colnames(out))] <- "yield.secondary"
+        # Add year
+        names(out)[names(out) == 'planting_date'] <- 'year'
+        out$year <- substr(out$year, 1, 4)
         # Filter missing records
         # out <- out[!is.na(out$yield.secondary), ]
         out
@@ -82,7 +88,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No secondary yield KPI data.")
       }
     } else if (kpi == "nue"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment","yield", "fw_yield", "dm_yield",
                         "N_fertilizer","P_fertilizer","K_fertilizer", "N_organic","P_organic","K_organic")
       #ensures you only select columns that actually exist in uu
@@ -110,10 +116,13 @@ function(res, req, eia_code, kpi) {
         out$PUE <- ifelse((out$P_fertilizer + out$P_organic) == 0, NA, out$yield / (out$P_fertilizer + out$P_organic))
         out$KUE <- ifelse((out$K_fertilizer + out$K_organic) == 0, NA, out$yield / (out$K_fertilizer + out$K_organic))
         out <- out[,-which(names(out) %in% c("N_fertilizer", "P_fertilizer", "K_fertilizer", "N_organic", "P_organic", "K_organic", "yield"))]
+        # Add year
+        names(out)[names(out) == 'planting_date'] <- 'year'
+        out$year <- substr(out$year, 1, 4)
         out
       }
     } else if(kpi == "profit"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment", "yield", "fw_yield", "dm_yield", "crop_price", "fertilizer_amount", "fertilizer_price", "labour_price", "currency")
       existing_cols <- intersect(desired_cols, names(uu))
       if (any(c("yield", "fw_yield", "dm_yield", "crop_price") %in% existing_cols)){
@@ -149,6 +158,10 @@ function(res, req, eia_code, kpi) {
             # Profit only... Still missing irrigation, weeding, etc.
             out$profit <- out$revenue
           }
+          # Add year
+          names(out)[names(out) == 'planting_date'] <- 'year'
+          out$year <- substr(out$year, 1, 4)
+          
           out[,-which(names(out) %in% c("yield", "revenue", "costs", "crop_price", "crop.revenue", "fertilizer_amount", "fertilizer_price", "fertilizer.costs"))]
         } else {
           res$body <- list(response = "No data.",
@@ -164,7 +177,7 @@ function(res, req, eia_code, kpi) {
         list("404 Not Found. No profit KPI data.")
       }
     } else if(kpi == "wue"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment", "yield","irrigation_amount","rain")
       existing_cols <- intersect(desired_cols, names(uu))
       k <- uu[, existing_cols, drop = FALSE]
@@ -175,12 +188,19 @@ function(res, req, eia_code, kpi) {
       k$WUE <- NA
       #Calc KPI nutrient use efficiency values... while handling zero division
       k$WUE <- ifelse((k$irrigation_amount + k$rain) == 0, NA, k$yield / (k$irrigation_amount + k$rain))
+      # Add year
+      names(k)[names(k) == 'planting_date'] <- 'year'
+      k$year <- substr(k$year, 1, 4)
+      
       k[,-which(names(k) %in% names_to_check)]
     } else if(kpi == "soc"){
-      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
+      desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"planting_date" , "crop",
                         "trial_id", "treatment", "soil_SOC")
       existing_cols <- intersect(desired_cols, names(uu))
       k <- uu[, existing_cols, drop = FALSE]
+      # Add year
+      names(k)[names(k) == 'planting_date'] <- 'year'
+      k$year <- substr(k$year, 1, 4)
       # Replace missing columns values with zero
       k[setdiff(desired_cols, names(k))] <- NA
     } else {
