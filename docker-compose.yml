@@ -13,7 +13,7 @@ services:
     command: ["Rscript", "compile.R"]
   kapi:
     container_name: kapi
-    image: iita/kapi:0.1.1
+    image: iita/kapi:0.1.3
     build: 
       context: .
       dockerfile: Dockerfile-kapi
