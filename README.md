@@ -62,6 +62,7 @@ The system consists of two main components:
 - Executes the data pipeline using `carob`
 - Reads raw data from `/usr/local/data/carob-eia/raw`
 - Writes processed outputs to `/usr/local/data/carob-eia/compiled`
+
 ### 2. API Container
 - Implements the API using `plumber`
 - Serves compiled data via REST endpoints
@@ -69,11 +70,7 @@ The system consists of two main components:
 
 ## Data Transfer Strategy
 
-Data transfer is performed using `rsync` over SSH.
-
-### Recommended Practice
-
-Use a standardized script instead of manual commands:
+The current implementation uses `rsync` over SSH to transfer the raw source data to the target host (VM). There is also an Azure blob available ([https://kapi.blob.core.windows.net](https://kapi.blob.core.windows.net)), but it hasn't been implemented as data source. For now, **it is necessary to execute `scripts/sync_data.sh` from [CG Labs](https://eia.scio.services:18002/) in order to transfer the data**. You can use the `.env` file with `scripts/sync_data.sh` or run a variaton of the code below from CG Labs.
 
 ```bash
 #!/bin/bash
@@ -81,8 +78,8 @@ Use a standardized script instead of manual commands:
 set -e
 
 SOURCE=~/carob-eia/data/
-TARGET=user@<VM-IP>:~/carob-eia/data/
-KEY=~/.ssh/<KEY>.pem
+TARGET=<SAMPLE_USER>@<HOST_IP>:~/carob-eia/data/
+KEY=~/.ssh/key.pem
 
 rsync -avz \
   --progress \
@@ -121,7 +118,7 @@ Edit `.env` with correct paths.
 
 3. Transfer data to the host (if needed):
 ```bash
-./sync_data.sh
+rsync -av -e "ssh -i ~/.ssh/key.pem" ~/carob-eia/data/ <SAMPLE_USER>@<HOST_IP>:~/carob-eia/data/
 ```
 
 4. Start the services:
