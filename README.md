@@ -64,7 +64,18 @@ The system consists of two main components:
 
 ## Data Transfer Strategy
 
-The current implementation uses `rsync` over SSH to transfer the raw source data to the target host (VM). There is also an Azure blob available ([https://kapi.blob.core.windows.net](https://kapi.blob.core.windows.net)), but it hasn't been implemented as data source. For now, **it is necessary to execute `scripts/sync_data.sh` from [CG Labs](https://eia.scio.services:18002/) in order to transfer the data**. You can use the `.env` file with `scripts/sync_data.sh` or run a variaton of the code below from CG Labs.
+The current implementation requires an instance of the data EiA use case data from [File Manager](https://datadrive.scio.services/) Excellence in Agronomy folder on [CG Labs](https://eia.scio.services:18002/). The data can be copied using the `usecase_code` (in File Manager) &rarr; `folder_name` (in CG Labs).
+
+For example:
+
+| Folder in File Manager <br> (`usecase_code`) | &rarr; | Folder in CG Labs <br>(`folder_name`) |
+|---|---|---|
+| USC012 | &rarr; |Cambodia-DSRC-Validation |
+| USC016 | &rarr; |Chinyanja-Solidaridad-Soy-AddOn |
+|...|  |...|
+| USC016 | &rarr; |Chinyanja-Solidaridad-Soy-NOT |
+
+Then use `rsync` over SSH to transfer the raw source data to the target host (VM). There is also an Azure blob available ([https://kapi.blob.core.windows.net](https://kapi.blob.core.windows.net)), but it hasn't been implemented as data source. You can use `scripts/sync_data.sh` from [CG Labs](https://eia.scio.services:18002/) in order to transfer the data. Change the `.env` file with `scripts/sync_data.sh` or run a variaton of the code below from CG Labs.
 
 ```bash
 #!/bin/bash
@@ -107,12 +118,12 @@ cd kapi-eia
 cp .env.example .env
 ```
 
-Edit `.env` with correct paths.
+Edit `.env` with correct variables and paths.
 
 
 3. Transfer data to the host (if needed):
 ```bash
-rsync -av -e "ssh -i ~/.ssh/key.pem" ~/carob-eia/data/ <SAMPLE_USER>@<HOST_IP>:~/carob-eia/data/
+rsync -av -e "ssh -i ~/.ssh/key.pem" $SOURCE_DIR $TARGET_USER@$TARGET_HOST:$TARGET_DIR
 ```
 
 4. Start the services:
