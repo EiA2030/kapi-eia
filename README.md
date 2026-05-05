@@ -9,9 +9,7 @@ The service is based on datasets processed using the carob workflow. The eia-car
 The system is designed as a portable, three-layer architecture that separates data management from application logic.
 
 ### Layer 1 — Data Source (CG Labs)
-Authoritative source of raw data
-Data is maintained and updated on an on-premises server
-Data is transferred to the deployment environment using rsync over SSH
+Authoritative source of raw data. The data is stored in the [File Manager](https://datadrive.scio.services/), and transferred from [CG Labs](https://eia.scio.services:18002/) to the deployment environment using rsync over SSH.
 
 Example:
 
@@ -22,9 +20,7 @@ rsync -avz -e "ssh -i ~/.ssh/<KEY>.pem" \
 ```
 
 ### Layer 2 — Data Staging (Host)
-Data is stored on the host machine filesystem
-Paths are defined **only via environment variables** in a .env file
-No assumptions are made about disk devices, partitions, or cloud provider
+Data is stored on the host machine filesystem, where paths are defined **only via environment variables** in a .env file. No assumptions are made about disk devices, partitions, or cloud provider.
 
 Example `.env`:
 
@@ -34,9 +30,7 @@ COMPILED_DATA=~/carob-eia/data/compiled
 ```
 
 ### Layer 3 — Application (Containers)
-The application runs as Docker containers managed via `docker-compose`
-Containers do **not** depend on host-specific paths
-Data is injected via bind mounts defined in `docker-compose.yml`
+The application runs as Docker containers managed via `docker-compose`. The containers do **not** depend on host-specific paths and the data is injected via bind mounts defined in `docker-compose.yml` using the variables defined in the `.env` file.
 
 Example:
 
