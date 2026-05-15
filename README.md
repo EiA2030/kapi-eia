@@ -2,7 +2,7 @@
 
 This repository contains the code to build and deploy a temporary API service exposing data from the CGIAR Excellence in Agronomy initiative.
 
-The service is based on datasets processed using the carob workflow. The eia-carob repository is included as a submodule and contains the data compilation logic.
+The service is based on datasets processed using the carob workflow. The [eia-carob](https://github.com/EiA2030/eia-carob) contains the data compilation logic.
 
 ## System Architecture
 
